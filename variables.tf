@@ -33,3 +33,32 @@ variable "private_subnet_cidr" {
   description = "CIDR used for private subnet"
   default     = "10.10.0.192/26"
 }
+
+variable "vm_instance_type" {
+  type    = string
+  default = "t3.nano"
+}
+
+variable "vm_has_public_ip_address" {
+  type    = bool
+  default = true
+}
+
+variable "vm_root_volume_size" {
+  type = number
+}
+
+variable "vm_data_volume_size" {
+  type = number
+}
+
+# EBS
+variable "vm_root_volume_type" {
+  type    = string
+  default = "gp3"
+}
+
+variable "vm_data_volume_type" {
+  type    = string
+  default = "gp3"
+}
