@@ -1,13 +1,19 @@
 # Terraform AWS Project #1
 
 ## Helpful Definitions
-- VPC:
-- CIDR: Stands for Classless Inter-Domain Routing (also known as supernetting), this was created to help reduce the number of routing tables on routers and slow the rapidly depleting IPv4 addresses. CIDR addresses are made up of two sets of numbers, a prefix and a s suffix (ex. 192.168.123.45/16).
 
+-   VPC:
+-   CIDR: Stands for Classless Inter-Domain Routing (also known as supernetting), this was created to help reduce the number of routing tables on routers and slow the rapidly depleting IPv4 addresses. CIDR addresses are made up of two sets of numbers, a prefix and a s suffix (ex. 192.168.123.45/16).
 
 ```sh
 chmod 400 ec2_key_pair.pem
 ssh -i ec2_key_pair.pem ec2-user@<ec2-ip>
+```
+
+Push tags with:
+
+```sh
+git push origin <tag_name>
 ```
 
 Sources
