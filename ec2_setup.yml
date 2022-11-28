@@ -24,7 +24,7 @@ write_files:
       server {
         listen 80;
         location / {
-          proxy_pass http://localhost:8000;
+          proxy_pass http://localhost:8080;
         }
       }
 runcmd:
