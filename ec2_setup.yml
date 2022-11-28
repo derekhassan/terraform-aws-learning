@@ -32,8 +32,7 @@ runcmd:
   # - [sh, 'yum install epel-release -y']
   # - [sh, 'yum install nginx -y']
   - mkdir -m777 /home/ec2-user/go-server
-  - curl -sLSf https://github.com/derekhassan/terraform-aws-learning/releases/download/v0.2/terraform-aws-learning-v0.2-linux-amd64.tar.gz > /tmp/server.tar.gz && tar -xvf /tmp/server.tar.gz -C /home/ec2-user/go-server/ --strip-components=1
-  - mv /home/ec2-user/go-server/terraform-aws-learning /home/ec2-user/go-server/main
+  - curl -sLSf https://github.com/derekhassan/terraform-aws-learning/releases/download/v0.3/terraform-aws-learning-v0.3-linux-amd64 > /home/ec2-user/go-server/main
   - chmod +x /home/ec2-user/go-server/main
   - [sh, -c, "amazon-linux-extras install -y nginx1"]
   - service goserver start
