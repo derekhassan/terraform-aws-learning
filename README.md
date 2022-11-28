@@ -16,6 +16,22 @@ Push tags with:
 git push origin <tag_name>
 ```
 
+Create the following `terraform.tfvars` file:
+```
+aws_region     = "us-east-2"
+aws_access_key = ""
+aws_secret_key = ""
+vpc_cidr = "10.10.0.0/16"
+public_subnet_cidr  = "10.10.0.128/26"
+private_subnet_cidr = "10.10.0.192/26"
+vm_instance_type         = "t3.nano"
+vm_has_public_ip_address = true
+vm_root_volume_size      = 10
+vm_root_volume_type      = "gp3"
+vm_data_volume_size      = 10
+vm_data_volume_type      = "gp3"
+```
+
 Sources
 [Making Sense of AWS CIDRs and Subnets](https://virtualizationreview.com/articles/2021/03/26/aws-subnetting.aspx)
 [CIDR (Classless Inter-Domain Routing or supernetting)](https://www.techtarget.com/searchnetworking/definition/CIDR)
