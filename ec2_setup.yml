@@ -3,7 +3,7 @@ repo_update: true
 repo_upgrade: all
 
 write_files:
-  - owner: ec2-user:ec2-user
+  - owner: root:root
     path: /etc/systemd/system/goserver.service
     content: |
       [Unit]
@@ -14,12 +14,12 @@ write_files:
       User=ec2-user
       Restart=always
       RestartSec=5s
-      ExecStart=/home/ec2-user/go-server/main
+      ExecStart=/srv/go-server/main
 
       [Install]
       WantedBy=multi-user.target
-  - owner: ec2-user:ec2-user
-    path: /etc/nginx/sites-available/default
+  - owner: nginx:nginx
+    path: /etc/nginx/conf.d/go_proxy.conf
     content: |
       server {
         listen 80;
@@ -27,13 +27,10 @@ write_files:
           proxy_pass http://localhost:8080;
         }
       }
+    defer: true
 runcmd:
-  # - [sh, 'amazon-linux-extras enable epel']
-  # - [sh, 'yum install epel-release -y']
-  # - [sh, 'yum install nginx -y']
-  - mkdir -m777 /home/ec2-user/go-server
-  - curl -sLSf https://github.com/derekhassan/terraform-aws-learning/releases/download/v0.3/terraform-aws-learning-v0.3-linux-amd64 > /home/ec2-user/go-server/main
-  - chmod +x /home/ec2-user/go-server/main
+  - mkdir /srv/go-server
+  - curl -sLSf https://github.com/derekhassan/terraform-aws-learning/releases/download/v0.4/terraform-aws-learning-v0.4-linux-amd64 > /srv/go-server/main && chmod +x /srv/go-server/main
   - [sh, -c, "amazon-linux-extras install -y nginx1"]
   - service goserver start
   - systemctl start nginx

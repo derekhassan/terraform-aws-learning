@@ -35,25 +35,10 @@ resource "aws_eip" "my_elastic_ip" {
   ]
 }
 
-# Create NAT
-resource "aws_nat_gateway" "my_nat_gw" {
-  allocation_id = aws_eip.my_elastic_ip.id
-  subnet_id     = aws_subnet.my_public_subnet.id
-  depends_on = [
-    aws_eip.my_elastic_ip
-  ]
-}
-
 # Create public subnet
 resource "aws_subnet" "my_public_subnet" {
   vpc_id     = aws_vpc.my_vpc.id
   cidr_block = var.public_subnet_cidr
-}
-
-# Create private subnet
-resource "aws_subnet" "my_private_subnet" {
-  vpc_id     = aws_vpc.my_vpc.id
-  cidr_block = var.private_subnet_cidr
 }
 
 # Create public route table
@@ -65,25 +50,10 @@ resource "aws_route_table" "my_public_rt" {
   }
 }
 
-# Create private route table
-resource "aws_route_table" "my_private_rt" {
-  vpc_id = aws_vpc.my_vpc.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.my_nat_gw.id
-  }
-}
-
 # Associate route table with public subnet
 resource "aws_route_table_association" "my_public_rt_association" {
   subnet_id      = aws_subnet.my_public_subnet.id
   route_table_id = aws_route_table.my_public_rt.id
-}
-
-# Associate route table with private subnet
-resource "aws_route_table_association" "my_private_rt_association" {
-  subnet_id      = aws_subnet.my_private_subnet.id
-  route_table_id = aws_route_table.my_private_rt.id
 }
 
 # Security Group
@@ -143,20 +113,20 @@ resource "aws_key_pair" "key_pair" {
 }
 # Save file
 resource "local_file" "ssh_key" {
-  filename = "${aws_key_pair.key_pair.key_name}.pem"
-  content  = tls_private_key.key_pair.private_key_pem
+  filename        = "${aws_key_pair.key_pair.key_name}.pem"
+  content         = tls_private_key.key_pair.private_key_pem
+  file_permission = "400"
 }
 
 # EC2
 resource "aws_instance" "my_ec2" {
-  ami                         = data.aws_ami.az_linux_2.id
-  instance_type               = var.vm_instance_type
-  subnet_id                   = aws_subnet.my_public_subnet.id
-  vpc_security_group_ids      = [aws_security_group.my_security_group.id]
-  source_dest_check           = false
-  key_name                    = aws_key_pair.key_pair.key_name
-  associate_public_ip_address = var.vm_has_public_ip_address
-  user_data                   = data.template_file.user_data.rendered
+  ami                    = data.aws_ami.az_linux_2.id
+  instance_type          = var.vm_instance_type
+  subnet_id              = aws_subnet.my_public_subnet.id
+  vpc_security_group_ids = [aws_security_group.my_security_group.id]
+  source_dest_check      = false
+  key_name               = aws_key_pair.key_pair.key_name
+  user_data              = data.template_file.user_data.rendered
 
   root_block_device {
     volume_size           = var.vm_root_volume_size
@@ -172,4 +142,9 @@ resource "aws_instance" "my_ec2" {
     delete_on_termination = true
     encrypted             = true
   }
+}
+
+resource "aws_eip_association" "eip_assoc" {
+  instance_id   = aws_instance.my_ec2.id
+  allocation_id = aws_eip.my_elastic_ip.id
 }
